@@ -1,0 +1,14 @@
+{
+  "name": "go-fullstack-v3-fr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^13.0.1"
+  }
+}
