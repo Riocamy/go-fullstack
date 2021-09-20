@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "start": "http-server ."
+    "start": "npx http-server . -p 4200"
   },
   "author": "",
   "license": "ISC",
