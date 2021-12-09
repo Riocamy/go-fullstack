@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "start": "npx http-server . -p 4200"
+    "start": "npx http-server . -p 4200 -P \"http://localhost:4200?\""
   },
   "author": "",
   "license": "ISC",
