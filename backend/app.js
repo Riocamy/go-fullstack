@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser'); //Parse automatiquement les requêtes en JSON
 
-//Import du schéma de données
-const Thing = require('./models/thing');
+//Import des routes
+const stuffRoutes = require('./routes/stuff');
+
 
 //Mise en place de la base de données MongoDB
 mongoose.connect('mongodb+srv://Riocamy:BBD9!ARYheszL9AF@gofullstackapi.2ekge.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
@@ -25,45 +27,11 @@ app.use((req, res, next) => {
   next();
 });
 
-//Création de la route POST
-app.post('/api/stuff', (req, res, next) => {
-  delete req.body._id;
-  const thing = new Thing({
-    ...req.body
-  });
-  thing.save()
-    .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-    .catch(error => res.status(400).json({ error }));
-});
+//Intégration du bodyparser
+app.use(bodyParser.json());
 
-/** Création de la route GET**/
+//Intégration des routes (CRUD)
+app.use('/api/stuff', stuffRoutes);
 
-//Récupération d'un objet spécifique (Affichage du produit sélectionné dans sa page dédiée)
-app.get('/api/stuff/:id', (req, res, next) => {
-  Thing.findOne({ _id: req.params.id })
-    .then(thing => res.status(200).json(thing))
-    .catch(error => res.status(404).json({ error }));
-});
-
-//Récupération de l'ensemble des objets
-app.get('/api/stuff', (req, res, next) => {
-  Thing.find()
-    .then(things => res.status(200).json(things))
-    .catch(error => res.status(400).json({ error }));
-});
-
-//Création de la route PUT
-app.put('/api/stuff/:id', (req, res, next) => {
-  Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-    .catch(error => res.status(400).json({ error }));
-});
-
-//Création de la route DELETE
-app.delete('/api/stuff/:id', (req, res, next) => {
-  Thing.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-    .catch(error => res.status(400).json({ error }));
-});
-
+//Pour exporter et exploiter l'API
 module.exports = app;
