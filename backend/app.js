@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 
+//Import du schéma de données
+const Thing = require('./models/thing');
+
 //Mise en place de la base de données MongoDB
 mongoose.connect('mongodb+srv://Riocamy:BBD9!ARYheszL9AF@gofullstackapi.2ekge.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -24,10 +27,13 @@ app.use((req, res, next) => {
 
 //Création de la route POST
 app.post('/api/stuff', (req, res, next) => {
-  console.log(req.body);
-  res.status(201).json({
-    message: 'Objet créé !'
+  delete req.body._id;
+  const thing = new Thing({
+    ...req.body
   });
+  thing.save()
+    .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+    .catch(error => res.status(400).json({ error }));
 });
 
 //Création de la route GET
