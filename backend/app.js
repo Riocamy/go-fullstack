@@ -59,4 +59,11 @@ app.put('/api/stuff/:id', (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 });
 
+//Création de la route DELETE
+app.delete('/api/stuff/:id', (req, res, next) => {
+  Thing.deleteOne({ _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+    .catch(error => res.status(400).json({ error }));
+});
+
 module.exports = app;
