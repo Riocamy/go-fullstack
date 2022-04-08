@@ -1,5 +1,13 @@
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+
+//Mise en place de la base de données MongoDB
+mongoose.connect('mongodb+srv://Riocamy:BBD9!ARYheszL9AF@gofullstackapi.2ekge.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 /**** Intégration des Middlewares ****/
 
