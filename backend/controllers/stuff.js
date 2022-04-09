@@ -3,26 +3,16 @@ const Thing = require('../models/Thing');
 
 //Controller de la route POST
 exports.createThing = (req, res, next) => {
+  const thingObject = JSON.parse(req.body.thing); //Pour extraire les données JSON de l'objet crée
+  delete thingObject._id;
   const thing = new Thing({
-    title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
+    ...thingObject,
+    //Pour générer l'URL de l'image de l'objet crée
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
-  thing.save().then(
-    () => {
-      res.status(201).json({
-        message: 'Post saved successfully!'
-      });
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
+  thing.save()
+    .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+    .catch(error => res.status(400).json({ error }));
 };
 
 //Controller de la route GET (récupération d'un objet spécifique)

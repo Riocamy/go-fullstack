@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser'); //Parse automatiquement les requêtes en JSON
+const path = require('path'); //Pour mettre en place le chemin d'accès à un fichier téléchargé par l'utilisateur
 
 //Import des routes (CRUD)
 const stuffRoutes = require('./routes/stuff');
@@ -31,6 +32,9 @@ app.use((req, res, next) => {
 
 //Intégration du bodyparser
 app.use(bodyParser.json());
+
+//Intégration du middleware de téléchargement de fichiers
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //Intégration des routes à l'API (CRUD)
 app.use('/api/stuff', stuffRoutes);
