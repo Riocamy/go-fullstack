@@ -1,6 +1,9 @@
 //Import du schéma de données
 const Thing = require('../models/Thing');
 
+//Import du package file system
+const fs = require('fs');
+
 //Controller de la route POST
 exports.createThing = (req, res, next) => {
   const thingObject = JSON.parse(req.body.thing); //Pour extraire les données JSON de l'objet crée
@@ -34,11 +37,11 @@ exports.getOneThing = (req, res, next) => {
 
 //Controller de la route PUT
 exports.modifyThing = (req, res, next) => {
-  const thingObject = req.file ? //S'il y a une image d'intégrée à l'objet
+  const thingObject = req.file ? //Vérifie si une image à été téléchargée avec l'objet
     {
       ...JSON.parse(req.body.thing), //Si oui, on récupère les informations au format JSON
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` //Générer une nouvelle URL
-    } : { ...req.body }; //Sinon on modifie son identifiant
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` //Puis on génére une nouvelle URL
+    } : { ...req.body }; //Sinon on modifie son contenu
   Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Objet modifié !'}))
     .catch(error => res.status(400).json({ error }));
@@ -46,33 +49,16 @@ exports.modifyThing = (req, res, next) => {
 
 //Controller de la route DELETE
 exports.deleteThing = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id }).then(
-    (thing) => {
-      if (!thing) { //S'il n'y a pas d'objet à supprimer
-        res.status(404).json({
-          error: new Error('No such Thing!')
-        });
-      }
-      if (thing.userId !== req.auth.userId) { //Si c'est un autre utilisateur qui cherche à supprimer l'objet
-        res.status(400).json({
-          error: new Error('Unauthorized request!')
-        });
-      }
-      Thing.deleteOne({ _id: req.params.id }).then( //Si ces conditions sont OK, on applique le controller
-        () => {
-          res.status(200).json({
-            message: 'Deleted!'
-          });
-        }
-      ).catch(
-        (error) => {
-          res.status(400).json({
-            error: error
-          });
-        }
-      );
-    }
-  )
+  Thing.findOne({ _id: req.params.id }) //On trouve l'objet dans la base de données
+    .then(thing => { //Quand on le trouve
+      const filename = thing.imageUrl.split('/images/')[1]; //On extrait le nom du fichier à supprimer
+      fs.unlink(`images/${filename}`, () => { //On supprime ce fichier (ici l'image)
+        Thing.deleteOne({ _id: req.params.id }) //Puis on supprime l'objet de la base de données
+          .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
+          .catch(error => res.status(400).json({ error }));
+      });
+    })
+    .catch(error => res.status(500).json({ error }));
 };
 
 //Controller de la route GET (récupération de tous les objets)
