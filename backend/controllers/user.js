@@ -1,5 +1,5 @@
-//Import du module de criptage
-const bcript = require('bcript');
+//Import du package de criptage
+const bcrypt = require('bcrypt');
 
 //Import de jsonwebtoken
 const jwt = require('jsonwebtoken');
