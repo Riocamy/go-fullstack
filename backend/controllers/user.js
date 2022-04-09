@@ -1,3 +1,12 @@
+//Import du module de criptage
+const bcript = require('bcript');
+
+//Import de jsonwebtoken
+const jwt = require('jsonwebtoken');
+
+//Import du modèle utilisateur
+const User = require('../models/User');
+
 //Controller pour la création d'un compte utilisateur 
 exports.signup = (req, res, next) => {
   //Cryptage haché du mot de passe
@@ -31,7 +40,11 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user._id,
-            token: 'TOKEN'
+            token: jwt.sign( //Création du token d'authentification
+              { userId: user._id },
+              'RANDOM_TOKEN_SECRET',
+              { expiresIn: '24h' }
+            )
           });
         })
         .catch(error => res.status(500).json({ error }));
