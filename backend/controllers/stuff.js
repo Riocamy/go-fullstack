@@ -32,29 +32,16 @@ exports.getOneThing = (req, res, next) => {
   );
 };
 
-//Controller de la route POST
+//Controller de la route PUT
 exports.modifyThing = (req, res, next) => {
-  const thing = new Thing({
-    _id: req.params.id,
-    title: req.body.title,
-    description: req.body.description,
-    imageUrl: req.body.imageUrl,
-    price: req.body.price,
-    userId: req.body.userId
-  });
-  Thing.updateOne({_id: req.params.id}, thing).then(
-    () => {
-      res.status(201).json({
-        message: 'Thing updated successfully!'
-      });
-    }
-  ).catch(
-    (error) => {
-      res.status(400).json({
-        error: error
-      });
-    }
-  );
+  const thingObject = req.file ? //S'il y a une image d'intégrée à l'objet
+    {
+      ...JSON.parse(req.body.thing), //Si oui, on récupère les informations au format JSON
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` //Générer une nouvelle URL
+    } : { ...req.body }; //Sinon on modifie son identifiant
+  Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));
 };
 
 //Controller de la route DELETE
