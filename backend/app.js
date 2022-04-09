@@ -3,8 +3,11 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser'); //Parse automatiquement les requêtes en JSON
 
-//Import des routes
+//Import des routes (CRUD)
 const stuffRoutes = require('./routes/stuff');
+
+//Import des routes utilisateur
+const userRoutes = require('./routes/user');
 
 //Mise en place de la base de données MongoDB
 mongoose.connect('mongodb+srv://Riocamy:BBD9!ARYheszL9AF@gofullstackapi.2ekge.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
@@ -29,8 +32,11 @@ app.use((req, res, next) => {
 //Intégration du bodyparser
 app.use(bodyParser.json());
 
-//Intégration des routes (CRUD)
+//Intégration des routes à l'API (CRUD)
 app.use('/api/stuff', stuffRoutes);
+
+//Intégration des routes utilisateur à l'API
+app.use('/api/auth', userRoutes);
 
 //Pour exporter et exploiter l'API
 module.exports = app;

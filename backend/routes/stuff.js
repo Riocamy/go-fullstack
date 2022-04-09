@@ -1,9 +1,12 @@
+//Import d'express
 const express = require('express');
+//Déclaration des routes
 const router = express.Router();
 
+//Import des controllers
 const stuffCtrl = require('../controllers/stuff');
 
-//Import des controllers
+//Ajout des controllers aux routes
 router.get('/', stuffCtrl.getAllStuff);
 router.post('/', stuffCtrl.createThing);
 router.get('/:id', stuffCtrl.getOneThing);

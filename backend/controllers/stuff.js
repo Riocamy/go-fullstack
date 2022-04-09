@@ -1,4 +1,5 @@
-const Thing = require('../models/thing');
+//Import du schéma de données
+const Thing = require('../models/Thing');
 
 //Controller de la route POST
 exports.createThing = (req, res, next) => {
