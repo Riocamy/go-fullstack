@@ -6,7 +6,6 @@ const bodyParser = require('body-parser'); //Parse automatiquement les requêtes
 //Import des routes
 const stuffRoutes = require('./routes/stuff');
 
-
 //Mise en place de la base de données MongoDB
 mongoose.connect('mongodb+srv://Riocamy:BBD9!ARYheszL9AF@gofullstackapi.2ekge.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   { useNewUrlParser: true,
